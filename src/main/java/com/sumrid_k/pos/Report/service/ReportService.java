@@ -33,7 +33,7 @@ public class ReportService {
 
     public void getDataAllServices() {
         // Get data from each service
-        ResponseEntity responseBills = restTemplate.getForEntity("https://soa-group7-235616.appspot.com/bills", ArrayList.class);
+        ResponseEntity responseBills = restTemplate.getForEntity("https://bill-service/bills", ArrayList.class);
         ResponseEntity responseProducts = restTemplate.getForEntity("https://soa-group7-235616.appspot.com/product", ArrayList.class);
         ResponseEntity responseStocks = restTemplate.getForEntity("https://soa-group7-235616.appspot.com/stocks", ArrayList.class);
 
