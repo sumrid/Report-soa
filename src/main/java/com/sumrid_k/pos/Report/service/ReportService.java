@@ -25,7 +25,9 @@ import java.util.List;
 public class ReportService {
 
     private Logger logger = LoggerFactory.getLogger(ReportApplication.class);
-    private RestTemplate restTemplate = new RestTemplate();
+
+    @Autowired
+    private RestTemplate restTemplate;
     private Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
 
     @Autowired
@@ -66,7 +68,7 @@ public class ReportService {
         reportRepository.save(report);
     }
 
-    public ArrayList<Report> getReports() {
+    public List<Report> getReports() {
         logger.debug("get report from database");
         return reportRepository.findAll();
     }

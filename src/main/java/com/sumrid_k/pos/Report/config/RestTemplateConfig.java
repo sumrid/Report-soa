@@ -1,4 +1,4 @@
-package com.sumrid_k.pos.Report;
+package com.sumrid_k.pos.Report.config;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
