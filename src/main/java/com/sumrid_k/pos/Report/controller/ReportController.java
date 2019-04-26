@@ -1,7 +1,9 @@
 package com.sumrid_k.pos.Report.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.sumrid_k.pos.Report.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,12 +34,22 @@ public class ReportController {
     // for get data from all service
     // FOR TEST
     @GetMapping("/get-all-data")
-    public void getData() {
+    @HystrixCommand(fallbackMethod = "fallbackGetAllData")
+    public String  getData() {
         reportService.getDataAllServices();
+        return "Success";
     }
 
     @GetMapping("/testbill")
     public ResponseEntity getBill() {
         return restTemplate.getForEntity("http://bill-service/bills", Object.class);
+    }
+
+    public String fallbackGetAllData() {
+        return "Please try again.";
+    }
+
+    public ResponseEntity fallbackGetBill() {
+        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body("Please try agail.");
     }
 }

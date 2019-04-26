@@ -36,35 +36,36 @@ public class ReportService {
     public void getDataAllServices() {
         // Get data from each service
         ResponseEntity responseBills = restTemplate.getForEntity("https://bill-service/bills", ArrayList.class);
-        ResponseEntity responseProducts = restTemplate.getForEntity("https://soa-group7-235616.appspot.com/product", ArrayList.class);
-        ResponseEntity responseStocks = restTemplate.getForEntity("https://soa-group7-235616.appspot.com/stocks", ArrayList.class);
+        ResponseEntity responseProducts = restTemplate.getForEntity("https://product-service/product", ArrayList.class);
+        ResponseEntity responseStocks = restTemplate.getForEntity("https://stock-service/stocks", ArrayList.class);
 
         logger.info(gson.toJson(responseBills.getBody()));
         logger.info(gson.toJson(responseProducts.getBody()));
         logger.info(gson.toJson(responseStocks.getBody()));
 
         // Convert json to object
-        Type type1 = new TypeToken<ArrayList<Bill>>() {}.getType();
+        Type typeOfBill = new TypeToken<ArrayList<Bill>>() {}.getType();
+        Type typeOfStock = new TypeToken<ArrayList<Stock>>() {}.getType();
+        Type typeOfProdoct = new TypeToken<List<Product>>() {}.getType();
+
         String billJson = gson.toJson(responseBills.getBody());
-        ArrayList<Bill> bills = gson.fromJson(billJson, type1);
-
-        Type type2 = new TypeToken<ArrayList<Stock>>() {}.getType();
         String stockJson = gson.toJson(responseStocks.getBody());
-        ArrayList<Stock> stocks = gson.fromJson(stockJson, type2);
-
-        Type type3 = new TypeToken<List<Product>>() {}.getType();
         String productJson = gson.toJson(responseProducts.getBody());
-        List<Product> products = gson.fromJson(productJson, type3);
 
-        // New report
+        ArrayList<Bill> bills = gson.fromJson(billJson, typeOfBill);
+        ArrayList<Stock> stocks = gson.fromJson(stockJson, typeOfStock);
+        List<Product> products = gson.fromJson(productJson, typeOfProdoct);
+
+
+        // Create new report
         Report report = new Report();
         report.setDate(new Date());
 //        report.setBestseller(findBestSeller(bills));
-        report.setLowInventory(findLowInventory(stocks));
+//        report.setLowInventory(findLowInventory(stocks));
         report.setIncome(calculateIncome(bills));
         report.setProfit(calculateProfit());
 
-        // Save to database...
+        // Save to database
         reportRepository.save(report);
     }
 
@@ -84,15 +85,17 @@ public class ReportService {
 //        return tmpProduct;
 //    }
 
-    private long findLowInventory(ArrayList<Stock> stocks) {
-        long tempProductId = 0;
+    private Stock findLowInventory(ArrayList<Stock> stocks) {
+        Stock tempProduct = new Stock();
         int tmpInventory = Integer.MAX_VALUE;
+
         for (Stock stock : stocks) {
             if (stock.getQuantity() < tmpInventory) {
-                tempProductId = stock.getProductId();
+                tempProduct = stock;
             }
         }
-        return tempProductId;
+
+        return tempProduct;
     }
 
     private double calculateIncome(ArrayList<Bill> bills) {
