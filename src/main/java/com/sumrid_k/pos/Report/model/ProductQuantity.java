@@ -1,11 +1,17 @@
 package com.sumrid_k.pos.Report.model;
 
 public class ProductQuantity {
+
     private long id;
-    private long productId;
+    private String productJson;
     private int quantity;
 
     public ProductQuantity() {
+    }
+
+    public ProductQuantity(String productJson, int quantity) {
+        this.productJson = productJson;
+        this.quantity = quantity;
     }
 
     public long getId() {
@@ -16,12 +22,12 @@ public class ProductQuantity {
         this.id = id;
     }
 
-    public long getProductId() {
-        return productId;
+    public String getProductJson() {
+        return productJson;
     }
 
-    public void setProductId(long productId) {
-        this.productId = productId;
+    public void setProductJson(String productJson) {
+        this.productJson = productJson;
     }
 
     public int getQuantity() {

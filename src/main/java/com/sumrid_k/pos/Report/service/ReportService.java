@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sumrid_k.pos.Report.ReportApplication;
-import com.sumrid_k.pos.Report.model.Bill;
-import com.sumrid_k.pos.Report.model.Product;
-import com.sumrid_k.pos.Report.model.Report;
-import com.sumrid_k.pos.Report.model.Stock;
+import com.sumrid_k.pos.Report.model.*;
 import com.sumrid_k.pos.Report.repository.ReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ReportService {
@@ -35,33 +30,33 @@ public class ReportService {
 
     public void getDataAllServices() {
         // Get data from each service
-        ResponseEntity responseBills = restTemplate.getForEntity("https://bill-service/bills", ArrayList.class);
-        ResponseEntity responseProducts = restTemplate.getForEntity("https://product-service/product", ArrayList.class);
-        ResponseEntity responseStocks = restTemplate.getForEntity("https://stock-service/stocks", ArrayList.class);
+        ResponseEntity responseBills = restTemplate.getForEntity("http://bill-service/bills", ArrayList.class);
+//        ResponseEntity responseProducts = restTemplate.getForEntity("http://product-service/product", ArrayList.class);
+//        ResponseEntity responseStocks = restTemplate.getForEntity("http://stock-service/stocks", ArrayList.class);
 
         logger.info(gson.toJson(responseBills.getBody()));
-        logger.info(gson.toJson(responseProducts.getBody()));
-        logger.info(gson.toJson(responseStocks.getBody()));
+//        logger.info(gson.toJson(responseProducts.getBody()));
+//        logger.info(gson.toJson(responseStocks.getBody()));
 
         // Convert json to object
         Type typeOfBill = new TypeToken<ArrayList<Bill>>() {}.getType();
         Type typeOfStock = new TypeToken<ArrayList<Stock>>() {}.getType();
-        Type typeOfProdoct = new TypeToken<List<Product>>() {}.getType();
+//        Type typeOfProdoct = new TypeToken<List<Product>>() {}.getType();
 
         String billJson = gson.toJson(responseBills.getBody());
-        String stockJson = gson.toJson(responseStocks.getBody());
-        String productJson = gson.toJson(responseProducts.getBody());
+//        String stockJson = gson.toJson(responseStocks.getBody());
+//        String productJson = gson.toJson(responseProducts.getBody());
 
         ArrayList<Bill> bills = gson.fromJson(billJson, typeOfBill);
-        ArrayList<Stock> stocks = gson.fromJson(stockJson, typeOfStock);
-        List<Product> products = gson.fromJson(productJson, typeOfProdoct);
+//        ArrayList<Stock> stocks = gson.fromJson(stockJson, typeOfStock);
+//        List<Product> products = gson.fromJson(productJson, typeOfProdoct);
 
 
         // Create new report
         Report report = new Report();
         report.setDate(new Date());
-//        report.setBestseller(findBestSeller(bills));
-//        report.setLowInventory(findLowInventory(stocks));
+        report.setBestseller(gson.toJson(findBestSeller(bills)));
+//        report.setLowInventory(gson.toJson(findLowInventory(stocks)));
         report.setIncome(calculateIncome(bills));
         report.setProfit(calculateProfit());
 
@@ -74,18 +69,26 @@ public class ReportService {
         return reportRepository.findAll();
     }
 
-//    private long findBestSeller(ArrayList<Bill> bills) {
-//        long tmpProduct = 0;
-//        int tmpAmount = 0;
-//        for (Bill bill : bills) {
-//            if (bill.getAmount() > tmpAmount) {
-//                tmpProduct = bill.getId();
-//            }
-//        }
-//        return tmpProduct;
-//    }
+    public Product findBestSeller(ArrayList<Bill> bills) {
+        Product bestSellerProduct;
+        Map<Product, Integer> productCount = new HashMap<>();
 
-    private Stock findLowInventory(ArrayList<Stock> stocks) {
+        for(Bill bill : bills) {
+            for(ProductQuantity productQuantity : bill.getProductQuantityList()) {
+                if(productQuantity != null) {
+                    Product product = gson.fromJson(productQuantity.getProductJson(), Product.class);
+                    if(!productCount.containsKey(product)) productCount.put(product, productQuantity.getQuantity());
+
+                    int currentQuantity = productCount.get(product) + productQuantity.getQuantity();
+                    productCount.put(product, currentQuantity);
+                }
+            }
+        }
+        bestSellerProduct = Collections.max(productCount.entrySet(), Map.Entry.comparingByValue()).getKey();
+        return bestSellerProduct;
+    }
+
+    public Stock findLowInventory(ArrayList<Stock> stocks) {
         Stock tempProduct = new Stock();
         int tmpInventory = Integer.MAX_VALUE;
 
@@ -98,7 +101,7 @@ public class ReportService {
         return tempProduct;
     }
 
-    private double calculateIncome(ArrayList<Bill> bills) {
+    public double calculateIncome(ArrayList<Bill> bills) {
         double totalIncome = 0;
         for(Bill bill : bills) {
             totalIncome += bill.getTotalPrice();
@@ -106,7 +109,7 @@ public class ReportService {
         return totalIncome;
     }
 
-    private double calculateProfit() {
-        return 45.4;
+    public double calculateProfit() {
+        return 50000.5;
     }
 }

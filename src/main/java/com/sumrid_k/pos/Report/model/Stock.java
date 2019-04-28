@@ -9,11 +9,11 @@ public class Stock {
     private int quantity;
     private double price;
     private String status;
-    private String productId;
+    private int productId;
 
     public Stock(){}
 
-    public Stock(int id, String name, String date_in, int quantity, double price, String status, String date_out, String productId) {
+    public Stock(int id, String name, String date_in, int quantity, double price, String status, String date_out, int productId) {
         this.id = id;
         this.name = name;
         this.date_in = date_in;
@@ -24,11 +24,11 @@ public class Stock {
         this.productId = productId;
     }
 
-    public String getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
