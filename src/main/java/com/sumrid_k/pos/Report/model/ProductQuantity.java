@@ -1,8 +1,15 @@
 package com.sumrid_k.pos.Report.model;
 
-public class ProductQuantity {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
+@Entity
+public class ProductQuantity {
+    @Id
+    @GeneratedValue
     private long id;
+
     private String productJson;
     private int quantity;
 
@@ -37,4 +44,5 @@ public class ProductQuantity {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
 }

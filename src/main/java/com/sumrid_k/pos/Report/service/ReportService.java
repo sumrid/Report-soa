@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sumrid_k.pos.Report.ReportApplication;
 import com.sumrid_k.pos.Report.model.*;
+import com.sumrid_k.pos.Report.repository.BillRepository;
 import com.sumrid_k.pos.Report.repository.ReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,7 @@ public class ReportService {
         Map<Product, Integer> productCount = new HashMap<>();
 
         for(Bill bill : bills) {
-            for(ProductQuantity productQuantity : bill.getProductQuantityList()) {
+            for(ProductQuantity productQuantity : bill.getProductQuantities()) {
                 if(productQuantity != null) {
                     Product product = gson.fromJson(productQuantity.getProductJson(), Product.class);
                     if(!productCount.containsKey(product)) productCount.put(product, productQuantity.getQuantity());

@@ -95,7 +95,7 @@ public class ReportServiceTest {
         bill1.setDate(new Date());
         bill1.setTotalPrice(99.99);
         bill1.setCompanyName("company test Inc.");
-        bill1.setProductQuantityList(productQuantities);
+        bill1.setProductQuantities(productQuantities);
         bill1.setUserName("Ifan Davey");
 
         productQuantities.add(new ProductQuantity(gson.toJson(p2), 2));
@@ -104,14 +104,14 @@ public class ReportServiceTest {
         bill2.setDate(new Date());
         bill2.setTotalPrice(120);
         bill2.setCompanyName("Nokia Inc.");
-        bill2.setProductQuantityList(productQuantities);
+        bill2.setProductQuantities(productQuantities);
         bill2.setUserName("Jame Oma");
 
         Bill bill3 = new Bill();
         bill3.setDate(new Date());
         bill3.setTotalPrice(2500.59);
         bill3.setCompanyName("TSK Trans");
-        bill3.setProductQuantityList(productQuantities);
+        bill3.setProductQuantities(productQuantities);
         bill3.setUserName("sumrid k");
 
         stockList.add(data1);
