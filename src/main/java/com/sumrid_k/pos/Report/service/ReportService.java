@@ -71,22 +71,22 @@ public class ReportService {
     }
 
     public Product findBestSeller(ArrayList<Bill> bills) {
-        Product bestSellerProduct;
-        Map<Product, Integer> productCount = new HashMap<>();
+        Long bestSellerProduct;
+        Map<Long, Integer> productCount = new HashMap<>();
 
         for(Bill bill : bills) {
             for(ProductQuantity productQuantity : bill.getProductQuantities()) {
                 if(productQuantity != null) {
-                    Product product = gson.fromJson(productQuantity.getProductJson(), Product.class);
-                    if(!productCount.containsKey(product)) productCount.put(product, productQuantity.getQuantity());
+                    if(!productCount.containsKey(productQuantity.getProductId())) productCount.put(productQuantity.getProductId(), productQuantity.getQuantity());
 
-                    int currentQuantity = productCount.get(product) + productQuantity.getQuantity();
-                    productCount.put(product, currentQuantity);
+                    int currentQuantity = productCount.get(productQuantity.getProductId()) + productQuantity.getQuantity();
+                    productCount.put(productQuantity.getProductId(), currentQuantity);
                 }
             }
         }
         bestSellerProduct = Collections.max(productCount.entrySet(), Map.Entry.comparingByValue()).getKey();
-        return bestSellerProduct;
+
+        return  restTemplate.getForObject("http://product-service/"+bestSellerProduct, Product.class);
     }
 
     public Stock findLowInventory(ArrayList<Stock> stocks) {

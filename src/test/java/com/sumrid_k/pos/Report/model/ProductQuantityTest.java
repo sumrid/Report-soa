@@ -12,19 +12,27 @@ public class ProductQuantityTest {
     public void testCreateObject() {
         ProductQuantity productQuantity = new ProductQuantity();
         productQuantity.setId(1);
-        productQuantity.setProductJson("json here");
+        productQuantity.setName("lenovo");
+        productQuantity.setPrice(456.2);
+        productQuantity.setProductId(1L);
         productQuantity.setQuantity(1);
 
-        assertEquals("json here", productQuantity.getProductJson());
+        assertEquals("lenovo", productQuantity.getName());
         assertEquals(1, productQuantity.getQuantity());
         assertEquals(1, productQuantity.getId());
+        assertEquals(456.2, productQuantity.getPrice(), 0.01);
+        assertEquals(1L, productQuantity.getProductId());
+
     }
 
     @Test
     public void testCreateOject() {
-        ProductQuantity productQuantity = new ProductQuantity("json here", 1);
+        ProductQuantity productQuantity = new ProductQuantity("lenovo", 1, 456,1L);
 
-        assertEquals("json here", productQuantity.getProductJson());
+        assertEquals("lenovo", productQuantity.getName());
         assertEquals(1, productQuantity.getQuantity());
+        assertEquals(456, productQuantity.getPrice(), 0.01);
+        assertEquals(1L, productQuantity.getProductId());
     }
+
 }
