@@ -6,6 +6,7 @@ import com.sumrid_k.pos.Report.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,6 +18,7 @@ public class ReportController {
     private ReportService reportService;
 
     @GetMapping("/")
+    @CrossOrigin(origins = "http://localhost:3000")
     public ModelAndView index() {
         ModelAndView view = new ModelAndView();
         view.setViewName("index.html");
@@ -24,6 +26,7 @@ public class ReportController {
     }
 
     @GetMapping("/reports")
+//    @CrossOrigin(origins = "http://localhost:3000")
     @HystrixCommand(fallbackMethod = "fallbackGetBill")
     public ResponseEntity getReport() {
         return ResponseEntity.ok(reportService.getReports());
